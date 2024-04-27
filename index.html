@@ -1,0 +1,18 @@
+{% extends "base.html" %} {% block title %} Homepage {% endblock %} {% block
+heading_text %} Welcome Primary School Project! {% endblock %} {% block main %}
+<p>
+  This project aims to gather insights into the social dynamics and academic
+  preferences of first-grade students.
+</p>
+<p>Please select one of the following options:</p>
+<div class="row">
+  <div class="col-6 text-center">
+    <a class="btn btn-primary" href="{{ url_for('questionnaire') }}"
+      >Take a questionnaire</a
+    >
+  </div>
+  <div class="col-6 text-center">
+    <a class="btn btn-primary" href="{{ url_for('summary') }}">View summary</a>
+  </div>
+</div>
+{% endblock %}
