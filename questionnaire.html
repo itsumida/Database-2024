@@ -1,0 +1,48 @@
+{% extends "base.html" %} {% block title %} Questionnaire {% endblock %} {%
+block heading_text %} Questionnaire {% endblock %} {% block main %} {% if errors
+%}
+<div class="alert alert-danger">
+  The form contains errors. Please fix them and try submitting again!
+</div>
+{% endif %} {% if '__fk__' in errors %}
+<div class="alert alert-warning">
+  Please make sure to select valid options from the drop-down menus.
+</div>
+{% endif %}
+<form action="{{url_for('questionnaire')}}" method="post">
+  <div class="form-floating my-2">
+    <select id="student_id" class="form-select" name="student_id" required>
+      <option value="">Select from the list</option>
+      {% for student in students %}
+      <option value="{{ student.id }}">
+        {{ student.first_name }} {{ student.last_name }}
+      </option>
+      {% endfor %}
+    </select>
+    <label for="student_id">Student</label>
+  </div>
+  <div class="form-floating my-2">
+    <select id="teacher_id" class="form-select" name="teacher_id" required>
+      <option value="">Select from the list</option>
+      {% for teacher in teachers %}
+      <option value="{{ teacher.id }}">
+        {{ teacher.first_name }} {{ teacher.last_name }}
+      </option>
+      {% endfor %}
+    </select>
+    <label for="teacher_id">Teacher</label>
+  </div>
+  <div class="form-floating my-2">
+    <select id="course_id" class="form-select" name="course_id" required>
+      <option value="">Select from the list</option>
+      {% for course in courses %}
+      <option value="{{ course.id }}">{{ course.title }}</option>
+      {% endfor %}
+    </select>
+    <label for="course_id">Favourite course</label>
+  </div>
+  <div class="mt-4">
+    <input class="btn btn-primary" type="submit" value="Submit" />
+  </div>
+</form>
+{% endblock %}
