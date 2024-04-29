@@ -63,9 +63,9 @@ INSERT INTO course VALUES (4, 'Art');
 INSERT INTO course VALUES (5, 'Gym');
 
 
-INSERT INTO student VALUES (1, 'Sara', 'Ruso', 1, 1);
+INSERT INTO student VALUES (1, 'Sara', 'Rusolli', 1, 1);
 INSERT INTO student VALUES (2, 'Elian', 'Ryan', 1, 2);
-INSERT INTO student VALUES (3, 'Sara', 'Ruso', 1, 3);
+INSERT INTO student VALUES (3, 'Sara', 'Reneth', 1, 3);
 INSERT INTO student VALUES (4, 'Sara', 'Ruso', 1, 4);
 INSERT INTO student VALUES (5, 'Shakhlo', 'Rustam', 1, 4);
 INSERT INTO student VALUES (6, 'Gani', 'Ahmad', 1, 3);
