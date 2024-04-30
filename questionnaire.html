@@ -105,11 +105,11 @@ NEW CODE TO TRY OUT
         <select id="partner1_id" class="form-select" name="partner1_id" required>
             <option value="">Select from the list</option>
             {% for partner1 in students %}
-                {{% if partner1.class_id == student.class_id %}}
+                {% if partner1.class_id == student.class_id %}
                     <option value = "{{ partner1.id }}">
                         {{ partner1.first_name }} {{ partner1.last_name }}
                     </option>
-                {{% endif %}}
+                {% endif %}
             {% endfor %}
         </select>
         <label for="partner1_id">1st Preferred Partner</label>
@@ -119,11 +119,11 @@ NEW CODE TO TRY OUT
         <select id="partner2_id" class="form-select" name="partner2_id" required>
             <option value="">Select from the list</option>
             {% for partner2 in students %}
-                {{% if partner2.class_id == student.class_id %}}
+                {% if partner2.class_id == student.class_id %}
                     <option value = "{{ partner2.id }}">
                         {{ partner2.first_name }} {{ partner2.last_name }}
                     </option>
-                {{% endif %}}
+                {% endif %}
             {% endfor %}
         </select>
         <label for="partner2_id">2nd Preferred Partner</label>
