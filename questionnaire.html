@@ -133,11 +133,11 @@ NEW CODE TO TRY OUT
         <select id="partner3_id" class="form-select" name="partner3_id" required>
             <option value="">Select from the list</option>
             {% for partner3 in students %}
-                {{% if partner3.class_id == student.class_id %}}
+                {% if partner3.class_id == student.class_id %}
                     <option value="{{ partner3.id }}">
                         {{ partner3.first_name }} {{ partner3.last_name }}
                     </option>
-                {{% endif %}}
+                {% endif %}
             {% endfor %}
         </select>
         <label for="partner3_id">3rd Preferred Partner</label>
