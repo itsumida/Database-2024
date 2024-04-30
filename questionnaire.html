@@ -41,110 +41,42 @@ block heading_text %} Questionnaire {% endblock %} {% block main %} {% if errors
     </select>
     <label for="course_id">Favourite course</label>
   </div>
+  <div class="form-floating my-2">
+    <select id="partner1_id" class="form-select" name="partner1_id" required>
+      <option value="">Select from the list</option>
+      {% for partner1 in students %}
+      <option value="{{ partner1.id }}">
+        {{ partner1.first_name }} {{ partner1.last_name }}
+      </option>
+      {% endfor %}
+    </select>
+    <label for="partner1_id">1st Preferred Partner</label>
+  </div>
+
+  <div class="form-floating my-2">
+    <select id="partner2_id" class="form-select" name="partner2_id" required>
+      <option value="">Select from the list</option>
+      {% for partner2 in students %}
+      <option value="{{ partner2.id }}">
+        {{ partner2.first_name }} {{ partner2.last_name }}
+      </option>
+      {% endfor %}
+    </select>
+    <label for="partner2_id">2nd Preferred Partner</label>
+  </div>
+  <div class="form-floating my-2">
+    <select id="partner3_id" class="form-select" name="partner1_id" required>
+      <option value="">Select from the list</option>
+      {% for partner3 in students %}
+      <option value="{{ partner3.id }}">
+        {{ partner3.first_name }} {{ partner3.last_name }}
+      </option>
+      {% endfor %}
+    </select>
+    <label for="partner3_id">3rd Preferred Partner</label>
+  </div>
   <div class="mt-4">
     <input class="btn btn-primary" type="submit" value="Submit" />
   </div>
 </form>
 {% endblock %}
-
-
-NEW CODE TO TRY OUT 
-
-{% extends "base.html" %} {% block title %} Questionnaire {% endblock %} {%
-    block heading_text %} Questionnaire {% endblock %} {% block main %} {% if errors
-    %}
-    <div class="alert alert-danger">
-      The form contains errors. Please fix them and try submitting again!
-    </div>
-    {% endif %} {% if '__fk__' in errors %}
-    <div class="alert alert-warning">
-      Please make sure to select valid options from the drop-down menus.
-    </div>
-    {% endif %}
-
-    <form action="{{url_for('questionnaire')}}" method="post">
-        <input type = "hidden" name = "class_id" value = "{{ student.class_id }}">
-
-      <div class="form-floating my-2">
-        <select id="student_id" class="form-select" name="student_id" required>
-          <option value="">Select from the list</option>
-          {% for student in students %}
-            {% if student.class_id == student.class_id %}
-                <option value="{{ student.id }}">
-                {{ student.first_name }} {{ student.last_name }}
-                </option>
-            {% endif %}
-          {% endfor %}
-        </select>
-        <label for="student_id">Student</label>
-      </div>
-
-      <div class="form-floating my-2">
-        <select id="teacher_id" class="form-select" name="teacher_id" required>
-          <option value="">Select from the list</option>
-          {% for teacher in teachers %}
-          <option value="{{ teacher.id }}">
-            {{ teacher.first_name }} {{ teacher.last_name }}
-          </option>
-          {% endfor %}
-        </select>
-        <label for="teacher_id">Homeroom Teacher</label>
-      </div>
-
-      <div class="form-floating my-2">
-        <select id="course_id" class="form-select" name="course_id" required>
-          <option value="">Select from the list</option>
-          {% for course in courses %}
-          <option value="{{ course.id }}">{{ course.title }}</option>
-          {% endfor %}
-        </select>
-        <label for="course_id">Favourite course</label>
-      </div>
-
-      <div class ="form-floating my-2">
-        <select id="partner1_id" class="form-select" name="partner1_id" required>
-            <option value="">Select from the list</option>
-            {% for partner1 in students %}
-                {% if partner1.class_id == student.class_id %}
-                    <option value = "{{ partner1.id }}">
-                        {{ partner1.first_name }} {{ partner1.last_name }}
-                    </option>
-                {% endif %}
-            {% endfor %}
-        </select>
-        <label for="partner1_id">1st Preferred Partner</label>
-      </div>
-
-      <div class ="form-floating my-2">
-        <select id="partner2_id" class="form-select" name="partner2_id" required>
-            <option value="">Select from the list</option>
-            {% for partner2 in students %}
-                {% if partner2.class_id == student.class_id %}
-                    <option value = "{{ partner2.id }}">
-                        {{ partner2.first_name }} {{ partner2.last_name }}
-                    </option>
-                {% endif %}
-            {% endfor %}
-        </select>
-        <label for="partner2_id">2nd Preferred Partner</label>
-      </div>
-
-      <div class ="form-floating my-2">
-        <select id="partner3_id" class="form-select" name="partner3_id" required>
-            <option value="">Select from the list</option>
-            {% for partner3 in students %}
-                {% if partner3.class_id == student.class_id %}
-                    <option value="{{ partner3.id }}">
-                        {{ partner3.first_name }} {{ partner3.last_name }}
-                    </option>
-                {% endif %}
-            {% endfor %}
-        </select>
-        <label for="partner3_id">3rd Preferred Partner</label>
-      </div>
-
-      <div class="mt-4">
-        <input class="btn btn-primary" type="submit" value="Submit" />
-      </div>
-    </form>
-    {% endblock %}
