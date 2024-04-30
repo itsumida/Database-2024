@@ -47,12 +47,10 @@ FOREIGN KEY(partner_id) REFERENCES student(id)
 INSERT INTO teacher VALUES (1, 'Anderson', 'Barber');
 INSERT INTO teacher VALUES (2, 'Jade', 'Clark');
 INSERT INTO teacher VALUES (3, 'Nicholas', 'Brown');
-INSERT INTO teacher VALUES (4, 'Ellen', 'Smith');
-INSERT INTO teacher VALUES (5, 'David', 'Cole');
 
 
 INSERT INTO class VALUES (1, '1A', 1);
-INSERT INTO class VALUES (2, '1B', 4);
+INSERT INTO class VALUES (2, '1B', 2);
 INSERT INTO class VALUES (3, '1C', 3);
 
 
