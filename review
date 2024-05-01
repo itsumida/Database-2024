@@ -1,0 +1,23 @@
+-- ChatGPT code -- 
+
+SELECT A.id AS student_id_1, A.first_name AS student_first_name_1, A.last_name AS student_last_name_1, 
+       C1.title AS student_pcourse_title_1,
+       B.id AS student_id_2, B.first_name AS student_first_name_2, B.last_name AS student_last_name_2, 
+       C2.title AS student_pcourse_title_2
+FROM pair p1
+JOIN pair p2 ON p1.student_id = p2.partner_id AND p1.partner_id = p2.student_id AND p1.student_id < p2.student_id
+JOIN student A ON p1.student_id = A.id
+JOIN student B ON p2.student_id = B.id
+JOIN course C1 ON A.pcourse_id = C1.id
+JOIN course C2 ON B.pcourse_id = C2.id;
+
+-- Zara's code --
+SELECT student.first_name AS student_first_name, 
+                student.last_name AS student_last_name, 
+                student.first_name AS partner_first_name, 
+                student.last_name AS partner_last_name, 
+                course.title AS course_title
+         FROM pair p, student, course
+         JOIN student s1 ON p.student_id = s1.id
+         JOIN student s2 ON p.partner_id = s2.id
+         JOIN course c ON student.pcourse_id = c.id
