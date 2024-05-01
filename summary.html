@@ -1,0 +1,129 @@
+{% extends "base.html" %} {% block title %} Summary {% endblock %} {% block
+heading_text %} Summary {% endblock %} {% block main %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Student Pairs and Their Favorite Courses</h2>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Preferred course</th>
+            <th>Partner</th>
+            <th>Preferred course</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pair in pairs %}
+          <tr>
+            <td>{{ pair[1] }} {{pair[2]}}</td>
+            <td>{{ pair[3] }}</td>
+            <!-- Student 1 with preferred course -->
+
+            <td>{{ pair[5] }} {{pair[6]}}</td>
+            <td>{{ pair[7] }}</td>
+
+            <!-- Student 2 with preferred course -->
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-6">
+      <h2>Top 3 Most Popular Students in Each Class</h2>
+      {% for class, students in popular_students.items() %}
+      <div class="mb-3">
+        <h4>Class {{ class }}</h4>
+        <ul class="list-group">
+          {% for student in students %}
+          <li class="list-group-item">
+            {{ student.first_name }} {{ student.last_name }}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="mt-5">
+    <h2>Courses Sorted by Popularity</h2>
+    <ol>
+      {% for course in popular_courses %}
+      <li>{{ course.title }}</li>
+      {% endfor %}
+    </ol>
+  </div>
+</div>
+{% endblock %}
+
+<!-- <ul>
+  {% for student in students %} {% if student.matches %}
+  <li>
+    {{ student.name }} is matched with:
+    <ul>
+      {% for match_id in student.matches %} {% for match in students %} {%
+      if match.id == match_id %}
+      <li>{{ match.name }}</li>
+      {% endif %} {% endfor %} {% endfor %}
+    </ul>
+  </li>
+  {% endif %} {% endfor %}
+</ul> -->
+
+<!-- {% for pair in pairs %}
+          <tr>
+            <td>{{ pair.student_first_name }} {{ pair.student_last_name }}</td>
+            <td>{{ pair.partner_first_name }} {{ pair.partner_last_name }}</td>
+            <td>{{ pair.course_title }}</td>
+          </tr>
+          {% endfor %} -->
+<!-- 
+            <div class="container">
+              <div class="row">
+                <div class="col-md-6">
+                  <h2>Student Pairs and Their Favorite Courses</h2>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Student</th>
+                        <th>Partner</th>
+                        <th>Favorite Course</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for pair in pairs %}
+                      <tr>
+                        <td>{{ pair['first_name'] }} {{ pair.student_last_name }}</td>
+                        <td>{{ pair.partner_first_name }} {{ pair.partner_last_name }}</td>
+                        <td>{{ pair.course_title }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                <div class="col-md-6">
+                  <h2>Top 3 Most Popular Students in Each Class</h2>
+                  {% for class, students in popular_students.items() %}
+                  <div class="mb-3">
+                    <h4>Class {{ class }}</h4>
+                    <ul class="list-group">
+                      {% for student in students %}
+                      <li class="list-group-item">
+                        {{ student.first_name }} {{ student.last_name }}
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mt-5">
+                <h2>Courses Sorted by Popularity</h2>
+                <ol>
+                  {% for course in popular_courses %}
+                  <li>{{ course.title }}</li>
+                  {% endfor %}
+                </ol>
+              </div>
+            </div>
+             -->
