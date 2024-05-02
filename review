@@ -12,12 +12,15 @@ JOIN course C1 ON A.pcourse_id = C1.id
 JOIN course C2 ON B.pcourse_id = C2.id;
 
 -- Zara's code --
-SELECT student.first_name AS student_first_name, 
-                student.last_name AS student_last_name, 
-                student.first_name AS partner_first_name, 
-                student.last_name AS partner_last_name, 
-                course.title AS course_title
-         FROM pair p, student, course
-         JOIN student s1 ON p.student_id = s1.id
-         JOIN student s2 ON p.partner_id = s2.id
-         JOIN course c ON student.pcourse_id = c.id
+SELECT s1.id AS student_id, s1.first_name AS student_first_name, 
+                s1.last_name AS student_last_name,
+                s2.id AS partner_id
+                s2.first_name AS partner_first_name, 
+                s2.last_name AS partner_last_name, 
+                c1.title AS student_course_title,
+                c2.title AS partner_course_title
+
+         FROM pair p
+         JOIN student s1 ON p.student_id = s1.id AND student s2 ON p.partner_id = s2.id AND p1.student_id < p2.student_id
+         JOIN course c1 ON s1.pcourse_id = c1.id
+         JOIN course c2 ON s2.pcourse_id = c2.id
