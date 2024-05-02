@@ -1,0 +1,26 @@
+1. What is the functionality of this thing: 
+{% if supervisor.id == employee.supervisor_id %} selected{% endif %}>
+2. How do we make it so that the database automatically updates it? We used to have only on etable and we asked (UPDATE this and this) 
+but what if we have info that is taken from multiple tables. Any sources you would redirect to?
+
+
+if not errors: #meaning if the set is empty
+            try:
+                cursor.execute(
+                    """
+                    UPDATE employee
+                    SET last_name=?, first_name=?, year_of_birth=?, department_id=?, hour_salary=?, supervisor_id=?, note=?
+                    WHERE id=?
+                    """,
+                    (
+                        employee["last_name"],
+                        employee["first_name"],
+                        employee["year_of_birth"],
+                        employee["department_id"],
+                        employee["hour_salary"],
+                        employee["supervisor_id"],
+                        employee["note"],
+                        employee_id
+                    )
+                )
+                db.commit()
