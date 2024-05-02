@@ -1,5 +1,5 @@
 1. What is the functionality of this thing: 
-{% if supervisor.id == employee.supervisor_id %} selected{% endif %}>
+{% if supervisor.id == employee.supervisor_id %} selected{% endif %}> 4times
 2. How do we make it so that the database automatically updates it? We used to have only on etable and we asked (UPDATE this and this) 
 but what if we have info that is taken from multiple tables. Any sources you would redirect to?
 
