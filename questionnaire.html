@@ -80,3 +80,9 @@ block heading_text %} Questionnaire {% endblock %} {% block main %} {% if errors
   </div>
 </form>
 {% endblock %}
+
+
+
+ if student['class_id'] != teacher_class_id:
+            error_message = "Selected student does not belong to the specified teacher's class."
+            return render_template('index.html', teachers=teachers.keys(), error_message=error_message, submitted_teacher=teacher)
