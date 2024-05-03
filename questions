@@ -24,3 +24,10 @@ if not errors: #meaning if the set is empty
                     )
                 )
                 db.commit()
+
+UPDATE pair
+SET student_id =?, partner_id=?, preference_rank=?
+1. student.id = student.class_id
+2. UPDATE
+3. Avoiding duplicate forms
+4. Pre-filled form
