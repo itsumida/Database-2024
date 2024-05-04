@@ -1,0 +1,146 @@
+from flask import Flask, abort, g, redirect, render_template, request, url_for
+import sqlite3
+
+DATABASE = "database.db"
+
+app = Flask(__name__)
+
+students1 = []
+
+def get_db():
+    if "db" not in g:
+        g.db = sqlite3.connect(DATABASE)
+        g.db.row_factory = sqlite3.Row
+        g.db.execute("PRAGMA foreign_keys=ON")
+    return g.db 
+
+@app.teardown_appcontext
+def close_db(exception):
+    db = g.pop("db", None)
+    if db is not None:
+        db.close()
+
+@app.route("/")
+def index():
+    return render_template('index.html')
+
+@app.route("/students/<int:student_id>")
+def student(student_id):
+    cursor = get_db().cursor()
+    cursor.execute("SELECT * FROM student WHERE id =?", [id])
+    student = cursor.fetchone()
+    if not student:
+        abort(404)
+    
+@app.route("/questionnaire/page", methods = ["GET", "POST"])
+def questionnaire():
+    cursor = get_db().cursor()
+    errors = set()
+
+    if request.method == "POST":
+        teacher_id = request.form.get("teacher_id")
+        student_class_id = request.form.get("student_class_id")
+        student_id = request.form.get("student_id")
+        cursor.execute("SELECT class_id FROM student WHERE id = ?", (student_id,))
+        student_class_id = cursor.fetchone()["class_id"] 
+
+        cursor.execute("SELECT class_id FROM class WHERE teacher_id =?", (teacher_id,))
+        teacher_class_id = cursor.fetchone()["class_id"]
+        if student_class_id != teacher_class_id: 
+            errors.add("Student does not belong in the specified homeroom teacher's class.")
+
+        if errors:
+            return render_template("questionnaire.html", errors=errors)
+        ###got to somehow make the form pre-filled here with an error message
+        if not errors:
+             try:
+                 cursor.execute(
+                     """
+                     UPDATE student
+                     SET first_name=?, last_name=?
+                     WHERE id=?
+                     """,
+                    (
+                         student["first_name"],
+                         student["last_name"],
+                         student_id
+                     )
+                 )
+                db.commit()
+                return redirect(url_for("summary"))
+            except sqlite3.Error as e:
+            return render_template("summary.html", errors=["Error updating student record"])
+    
+
+
+        try:
+            form = request.form
+            id = int(form.get("student_id"))  
+            cursor.execute("BEGIN")
+            cursor.execute("""
+                 SELECT id
+                 FROM student
+                 WHERE id =?
+                 LIMIT 1
+             """, [id]) #have no idea what this code is about but needed it for the "already answered" file to appear
+            if cursor.fetchone():
+                cursor.execute("COMMIT")
+                return render_template("questionnaire_confirmation.html")
+        except (TypeError, ValueError, sqlite3.DatabaseError):
+            abort(400)
+        
+  
+    cursor.execute("SELECT * FROM student")
+    students = cursor.fetchall()
+    teachers = cursor.execute("SELECT * FROM teacher")
+    teachers = cursor.fetchall()
+    courses = cursor.execute("SELECT * FROM course")
+    courses = cursor.fetchall()
+    return render_template("questionnaire.html", students = students, teachers = teachers, courses = courses)
+
+
+@app.route("/summary/page")
+def summary():
+    cursor = get_db().cursor()
+    cursor.execute("""
+        SELECT s1.id AS student1_id, s1.first_name AS student1_first_name, s1.last_name AS student1_last_name, c1.title AS student1_pcourse_title,
+        s2.id AS student2_id, s2.first_name AS student2_first_name, s2.last_name AS student2_last_name, c2.title AS student2_pcourse_title
+        FROM pair p1
+        JOIN pair p2 ON p1.student_id = p2.partner_id AND p1.partner_id = p2.student_id AND p1.student_id < p2.student_id 
+        JOIN student s1 ON p1.student_id = s1.id
+        JOIN student s2 ON p2.student_id = s2.id 
+        JOIN course c1 ON s1.pcourse_id = c1.id 
+        JOIN course c2 ON s2.pcourse_id = c2.id;
+          """)
+    pairs = cursor.fetchall()
+
+    popular_students = {}
+    cursor.execute("SELECT DISTINCT class_id FROM student")
+    class_ids = cursor.fetchall()
+    for class_id in class_ids:
+         cursor.execute("""
+             SELECT s.first_name, s.last_name
+             FROM student s
+             WHERE s.class_id = ?
+             ORDER BY (
+                 SELECT COUNT(*)
+                 FROM pair p
+                 WHERE p.student_id = s.id
+             ) DESC
+             LIMIT 3
+         """, (class_id['class_id'],))
+         popular_students[class_id['class_id']] = cursor.fetchall()
+
+    cursor.execute("""
+         SELECT c.title, student.pcourse_id
+         FROM course c, student
+         JOIN student s ON c.id = student.pcourse_id
+         GROUP BY c.title
+         ORDER BY COUNT(*) DESC
+     """)
+    popular_courses = cursor.fetchall()
+
+    return render_template("summary.html", pairs=pairs, popular_students=popular_students, popular_courses=popular_courses)
+
+if __name__ == "__main__":
+    app.run(debug=True)
