@@ -28,15 +28,26 @@ JOIN course c1 ON s1.pcourse_id = c1.id
 JOIN course c2 ON s2.pcourse_id = c2.id
 
 - Code for validation -
-@app.route("/questionnaire/page", methods = ["GET", "POST"])
+@app.route("/questionnaire/page", methods=["GET", "POST"])
 def questionnaire():
     cursor = get_db().cursor()
+    form_data = {}  # Initialize an empty dictionary to hold form data
     if request.method == "POST":
         try:
             form = request.form
             student_id = int(form.get("student_id"))
-            teacher_id = int(form.get("teacher_id"))  
+            teacher_id = int(form.get("teacher_id")) 
+            partner1_id = int(form.get("partner1_id"))
+            partner2_id = int(form.get("partner2_id"))
+            partner3_id = int(form.get("partner3_id"))
+
+            # Check if the selected partners are unique
+            if partner1_id == partner2_id or partner1_id == partner3_id or partner2_id == partner3_id:
+                return render_template("select_unique.html", message="Please select three unique partners.")
+
             cursor.execute("BEGIN")
+
+            # Check if the student has already submitted a questionnaire
             cursor.execute("""
                 SELECT student_id
                 FROM pair
@@ -46,9 +57,13 @@ def questionnaire():
             existing_pair = cursor.fetchone()
             if existing_pair:
                 cursor.execute("COMMIT")
-                return render_template("questionnaire_already_answered.html") #this is always returning as long as student id is found in among the values we inserted to the pair table
-            else:
-                cursor.execute("""
+                return render_template("questionnaire_already_answered.html")
+            
+            # Check if the selected partners include the student
+            if student_id in [partner1_id, partner2_id, partner3_id]:
+                return render_template("select_not_you.html", message="Please select partners other than yourself.")
+            
+            cursor.execute("""
                 SELECT id
                 FROM student
                 WHERE id = ? AND class_id = ?
@@ -56,13 +71,43 @@ def questionnaire():
             """, [student_id, teacher_id])
             student_teacher_matching = cursor.fetchone()
             if not student_teacher_matching:
-                return render_template("mismatched_teacher.html") #checking if the student chose his own teacher
-            else:
-                return render_template("thank_you.html") #if so, returns thank you
+                return render_template("mismatched_teacher.html")
 
 
-Student submits the form:
-If his id is inserted by us: "You've already submitted!"
-If not: 1)Checking for the teacher student matching: If doesn't match, "mismatched_teacher.html". If matches, "thank you.html"
+            cursor.execute("""
+                INSERT INTO pair (student_id, partner_id, preference_rank)
+                VALUES (?, ?, 1), (?, ?, 2), (?, ?, 3)
+            """, (student_id, partner1_id, student_id, partner2_id, student_id, partner3_id))
+            cursor.execute("COMMIT")
 
-We are missing the updating part of the pair table after the student matches the teacher and before executing thank you.
+            form_data = {
+                "student_id": request.form.get("student_id"),
+                "teacher_id": request.form.get("teacher_id"),
+                "course_id": request.form.get("course_id"),
+                "partner1_id": request.form.get("partner1_id"),
+                "partner2_id": request.form.get("partner2_id"),
+                "partner3_id": request.form.get("partner3_id")
+            }
+            # cursor.execute("COMMIT")
+            return render_template("thank_you.html")
+        except (TypeError, ValueError, sqlite3.DatabaseError):
+            abort(400)
+
+    cursor.execute("SELECT * FROM student")
+    students = cursor.fetchall()
+    teachers = cursor.execute("SELECT * FROM teacher")
+    teachers = cursor.fetchall()
+    courses = cursor.execute("SELECT * FROM course")
+    courses = cursor.fetchall()
+    return render_template("questionnaire.html", students=students, teachers=teachers, courses=courses, form_data = form_data)
+
+1. I have created mentioned html files. 
+2. Student chooses his own teacher(done)
+3. student chooses 3 unique partners(done)
+4. student can't choose himself as partner(done)
+5. updating pair table(done)
+6. student submits for the first time(done)
+
+What's left?
+
+Prefilled submission 
