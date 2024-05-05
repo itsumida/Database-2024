@@ -26,3 +26,43 @@ JOIN student s1 ON p1.student_id = s1.id
 JOIN student s2 ON p2.student_id = s2.id
 JOIN course c1 ON s1.pcourse_id = c1.id
 JOIN course c2 ON s2.pcourse_id = c2.id
+
+- Code for validation -
+@app.route("/questionnaire/page", methods = ["GET", "POST"])
+def questionnaire():
+    cursor = get_db().cursor()
+    if request.method == "POST":
+        try:
+            form = request.form
+            student_id = int(form.get("student_id"))
+            teacher_id = int(form.get("teacher_id"))  
+            cursor.execute("BEGIN")
+            cursor.execute("""
+                SELECT student_id
+                FROM pair
+                WHERE student_id = ?
+                LIMIT 1
+            """, [student_id])
+            existing_pair = cursor.fetchone()
+            if existing_pair:
+                cursor.execute("COMMIT")
+                return render_template("questionnaire_already_answered.html") #this is always returning as long as student id is found in among the values we inserted to the pair table
+            else:
+                cursor.execute("""
+                SELECT id
+                FROM student
+                WHERE id = ? AND class_id = ?
+                LIMIT 1
+            """, [student_id, teacher_id])
+            student_teacher_matching = cursor.fetchone()
+            if not student_teacher_matching:
+                return render_template("mismatched_teacher.html") #checking if the student chose his own teacher
+            else:
+                return render_template("thank_you.html") #if so, returns thank you
+
+
+Student submits the form:
+If his id is inserted by us: "You've already submitted!"
+If not: 1)Checking for the teacher student matching: If doesn't match, "mismatched_teacher.html". If matches, "thank you.html"
+
+We are missing the updating part of the pair table after the student matches the teacher and before executing thank you.
