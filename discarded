@@ -1,0 +1,8 @@
+From app.py:
+@app.route("/students/<int:student_id>")
+def student(student_id):
+    cursor = get_db().cursor()
+    cursor.execute("SELECT * FROM student WHERE id =?", [id])
+    student = cursor.fetchone()
+    if not student:
+        abort(404) #do we need this code?
